@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Sort Example</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 50px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="addTable()">Add Table</button>
+
+    <script>
+
+        function getCookie(cookieName) {
+            const name = cookieName + "=";
+            const decodedCookie = decodeURIComponent(document.cookie);
+            const cookieArray = decodedCookie.split(';');
+            for(let i = 0; i < cookieArray.length; i++) {
+                let cookie = cookieArray[i];
+                while (cookie.charAt(0) === ' ') {
+                    cookie = cookie.substring(1);
+                }
+                if (cookie.indexOf(name) === 0) {
+                    return cookie.substring(name.length, cookie.length);
+                }
+            }
+            return "";
+        }
+
+
+
+        var previousAssignments = {};
+
+        previousAssignments = JSON.parse(localStorage.getItem("previousAssignments"))
+
+        console.log("previousAssignments: ", previousAssignments)
+
+        addTable(false)
+
+        function addTable(shuffle=true) {
+            var table = document.createElement("table");
+            table.setAttribute("class", "roomTable");
+
+            var rooms = ["Room 1", "Room 2", "Room 3"];
+            var persons = ["John", "Jane", "Michael", "Alice", "Emily", "David", "Sophia", "James", "Emma", "Matthew", "Olivia", "William"];
+
+            console.log("shuffle: ", shuffle)
+            if(shuffle){
+                shuffleArray(persons);
+            }
+            else{
+                rooms = JSON.parse(localStorage.getItem("rooms"))
+                persons = JSON.parse(localStorage.getItem("persons"))
+            }
+
+
+            var headerRow = document.createElement("tr");
+            var headerCell = document.createElement("th");
+            headerRow.appendChild(headerCell);
+
+            rooms.forEach(function(room) {
+                var th = document.createElement("th");
+                th.textContent = room;
+                headerRow.appendChild(th);
+            });
+
+            table.appendChild(headerRow);
+
+            var newAssignments = {};
+            var personIndex = 0;
+
+            for (var i = 0; i < persons.length; i += rooms.length) {
+                var row = document.createElement("tr");
+                var cell = document.createElement("td");
+                cell.textContent = "Person " + (i / rooms.length + 1);
+                row.appendChild(cell);
+
+                for (var j = i; j < i + rooms.length; j++) {
+                    var td = document.createElement("td");
+                    var person = persons[j];
+                    var room = rooms[j % rooms.length];
+                    td.textContent = person;
+                    row.appendChild(td);
+                    newAssignments[person] = room;
+                }
+
+                table.appendChild(row);
+            }
+
+            if (shuffle && compareAssignments(previousAssignments, newAssignments)) {
+                addTable();
+                return;
+            }
+
+            previousAssignments = newAssignments;
+
+            console.log("set previousAssignments: ", previousAssignments)
+            localStorage.setItem("previousAssignments", JSON.stringify(previousAssignments))
+            localStorage.setItem("rooms", JSON.stringify(rooms))
+            localStorage.setItem("persons", JSON.stringify(persons))
+
+            document.body.appendChild(table);
+        }
+
+        function shuffleArray(array) {
+            for (var i = array.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function compareAssignments(assignments1, assignments2) {
+            for (var person in assignments1) {
+                if (assignments1.hasOwnProperty(person) && assignments2.hasOwnProperty(person)) {
+                    if (assignments1[person] === assignments2[person]) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>
+
