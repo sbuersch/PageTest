@@ -14,6 +14,7 @@
             border: 1px solid black;
             padding: 8px;
             text-align: center;
+
         }
         th {
             background-color: #f2f2f2;
@@ -50,6 +51,7 @@
 
 
         var previousAssignments = {};
+        var table_id = 0;
 
         previousAssignments = JSON.parse(localStorage.getItem("previousAssignments"))
 
@@ -57,18 +59,29 @@
 
         addTable(false)
 
-        function addTable(shuffle=true) {
+        function addTable(shuffle=true, increase_table_id=true, table_id_pass=0) {
             var table = document.createElement("table");
+
+            table_id = table_id + 1;
+
+            if(!increase_table_id){
+                table_id = table_id_pass;
+            }
+
+            table.id = "table-"+table_id.toString();
             table.setAttribute("class", "roomTable");
 
             var rooms = ["Room 1", "Room 2", "Room 3"];
             var persons = ["John", "Jane", "Michael", "Alice", "Emily", "David", "Sophia", "James", "Emma", "Matthew", "Olivia", "William"];
 
-            console.log("shuffle: ", shuffle)
             if(shuffle){
+                if (localStorage.getItem("persons")){
+                    persons = JSON.parse(localStorage.getItem("persons"))
+                }
                 shuffleArray(persons);
             }
             else{
+                console.log("get data from cookie")
                 rooms = JSON.parse(localStorage.getItem("rooms"))
                 persons = JSON.parse(localStorage.getItem("persons"))
             }
@@ -89,6 +102,8 @@
             var newAssignments = {};
             var personIndex = 0;
 
+            var index_counter = 0;
+
             for (var i = 0; i < persons.length; i += rooms.length) {
                 var row = document.createElement("tr");
                 var cell = document.createElement("td");
@@ -99,7 +114,11 @@
                     var td = document.createElement("td");
                     var person = persons[j];
                     var room = rooms[j % rooms.length];
+                    td.contentEditable = true;
                     td.textContent = person;
+                    td.id = index_counter
+                    index_counter = index_counter + 1;
+
                     row.appendChild(td);
                     newAssignments[person] = room;
                 }
@@ -108,18 +127,47 @@
             }
 
             if (shuffle && compareAssignments(previousAssignments, newAssignments)) {
-                addTable();
+                addTable(true, false, table_id);
                 return;
             }
 
             previousAssignments = newAssignments;
 
-            console.log("set previousAssignments: ", previousAssignments)
             localStorage.setItem("previousAssignments", JSON.stringify(previousAssignments))
             localStorage.setItem("rooms", JSON.stringify(rooms))
             localStorage.setItem("persons", JSON.stringify(persons))
 
-            document.body.appendChild(table);
+            table.addEventListener("input", function(event) {
+                if (event.target.tagName === "TD") {
+                    var value = event.target.innerText;
+                    var id = event.target.id;
+                    persons[id] = value;
+                    console.log("persons: ", persons)
+                    localStorage.setItem("persons", JSON.stringify(persons))
+                }
+            });
+
+            //beginn
+            if (table_id == 0){
+                document.body.appendChild(table);
+            }
+
+            if (table_id == 1){
+                document.body.appendChild(table);
+            }
+
+            if (table_id >= 2){
+                var tableToRemove = document.getElementById("table-0");
+                if (tableToRemove) {
+                    // Remove the table element from its parent node
+                    tableToRemove.parentNode.removeChild(tableToRemove);
+                }
+                var tableToPutOnFirstPlace = document.getElementById("table-1");
+                tableToPutOnFirstPlace.id = "table-0";
+                table.id = "table-1"
+                document.body.appendChild(table);
+            }
+
         }
 
         function shuffleArray(array) {
