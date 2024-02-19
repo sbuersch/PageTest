@@ -4,21 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random Sort Example</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
-        table {
+        .table {
             border-collapse: collapse;
             width: 100%;
-            margin-bottom: 50px;
+            margin-bottom: 3rem;
+            margin-top: 3rem;
         }
         th, td {
-            border: 1px solid black;
-            padding: 8px;
+            /*border: 1px solid black;*/
+            /*padding: 8px;*/
             text-align: center;
 
         }
-        th {
-            background-color: #f2f2f2;
-        }
+        /*th {*/
+        /*    background-color: #f2f2f2;*/
+        /*}*/
         button {
             margin-top: 10px;
             padding: 10px 20px;
@@ -28,7 +31,15 @@
     </style>
 </head>
 <body>
-    <button onclick="addTable()">Add Table</button>
+
+    <div class="container" style="margin-top:20px;">
+  <h2>Raumverteilung</h2>
+  <div class="row justify-content-end">
+    <div class="col-auto">
+      <button onclick="addTable()" type="button" class="">Zufällig</button>
+    </div>
+  </div>
+</div>
 
     <script>
 
@@ -62,6 +73,7 @@
         function addTable(shuffle=true, increase_table_id=true, table_id_pass=0) {
             var table = document.createElement("table");
 
+
             table_id = table_id + 1;
 
             if(!increase_table_id){
@@ -69,7 +81,7 @@
             }
 
             table.id = "table-"+table_id.toString();
-            table.setAttribute("class", "roomTable");
+            table.setAttribute("class", "table");
 
             var rooms = ["Room 1", "Room 2", "Room 3"];
             var persons = ["John", "Jane", "Michael", "Alice", "Emily", "David", "Sophia", "James", "Emma", "Matthew", "Olivia", "William"];
@@ -82,8 +94,17 @@
             }
             else{
                 console.log("get data from cookie")
-                rooms = JSON.parse(localStorage.getItem("rooms"))
-                persons = JSON.parse(localStorage.getItem("persons"))
+                if (localStorage.getItem("rooms")) {
+                    rooms = JSON.parse(localStorage.getItem("rooms"))
+                }else{
+                    rooms = rooms
+                }
+                if (localStorage.getItem("persons")) {
+                    persons = JSON.parse(localStorage.getItem("persons"))
+                }
+                else{
+                    persons = persons
+                }
             }
 
 
