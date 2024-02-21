@@ -12,10 +12,15 @@
             width: 100%;
             margin-bottom: 3rem;
             margin-top: 3rem;
+            table-layout: fixed;
+        }
+        h5{
+            margin-left: 20px;
         }
         th, td {
             /*border: 1px solid black;*/
             /*padding: 8px;*/
+            width: 25%;
             text-align: center;
 
         }
@@ -83,7 +88,7 @@
             table.id = "table-"+table_id.toString();
             table.setAttribute("class", "table");
 
-            var rooms = ["Room 1", "Room 2", "Room 3"];
+            var rooms = ["Raum 1", "Raum 2", "Raum 3"];
             var persons = ["John", "Jane", "Michael", "Alice", "Emily", "David", "Sophia", "James", "Emma", "Matthew", "Olivia", "William"];
 
             if(shuffle){
@@ -170,14 +175,36 @@
 
             //beginn
             if (table_id == 0){
+                var h5 = document.createElement("h5");
+                h5.textContent = "Vorige Einteilung";
+                document.body.appendChild(h5);
+
                 document.body.appendChild(table);
             }
 
             if (table_id == 1){
+
+                var h5 = document.createElement("h5");
+                h5.textContent = "Vorige Einteilung";
+                document.body.appendChild(h5);
+
                 document.body.appendChild(table);
             }
 
             if (table_id >= 2){
+
+                var headingToRemove = document.getElementById("neue-einteilung");
+
+                if(headingToRemove){
+                    headingToRemove.parentNode.removeChild(headingToRemove);
+                }
+
+                var h5 = document.createElement("h5");
+
+                h5.textContent = "Neue Einteilung";
+                h5.id ="neue-einteilung"
+                document.body.appendChild(h5);
+
                 var tableToRemove = document.getElementById("table-0");
                 if (tableToRemove) {
                     // Remove the table element from its parent node
