@@ -89,7 +89,7 @@
             table.setAttribute("class", "table");
 
             var rooms = ["Raum 1", "Raum 2", "Raum 3"];
-            var persons = ["John", "Jane", "Michael", "Alice", "Emily", "David", "Sophia", "James", "Emma", "Matthew", "Olivia", "William"];
+            var persons = ["John", "Jane", "Michael", "Alice", "Emily", "David", "Sophia", "James", "Emma", "Matthew", "Olivia",];
 
             if(shuffle){
                 if (localStorage.getItem("persons")){
@@ -146,7 +146,9 @@
                     index_counter = index_counter + 1;
 
                     row.appendChild(td);
-                    newAssignments[person] = room;
+                    if(person) {
+                        newAssignments[person] = room;
+                    }
                 }
 
                 table.appendChild(row);
@@ -156,6 +158,8 @@
                 addTable(true, false, table_id);
                 return;
             }
+
+            // console.log("newAssignments: ", newAssignments)
 
             previousAssignments = newAssignments;
 
